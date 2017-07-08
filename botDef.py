@@ -24,8 +24,13 @@ helpTxt = "ruTorrentPyBot \n\nAdd torrent directly from telegram. \n\n Commands:
 bot = telegram.Bot(botToken.TOKEN)
 text = ''
 chat_id = ''
-update_id = ''
-LAST_UPDATE_ID = bot.getUpdates()[-1].update_id
+# update_id
+try:
+    LAST_UPDATE_ID = bot.getUpdates()[-1].update_id
+    bot_logger.debug("LAST_UPDATE_ID={}".format(LAST_UPDATE_ID))
+except IndexError as ex:
+    bot_logger.error(ex)
+    LAST_UPDATE_ID = -1
 
 # Array for storing user step into configuration
 chat_id_f_config = []
@@ -117,9 +122,10 @@ def firstconfig():
             writeconfig(text, 4)
             writeconfig("4", 0)
             user = read_user_info()
+            args_to_func = ["YES"], ["NO"]
             msg = "Correct? \nAddress: " + user.host + "\nPort: " + user.port + "\nUsername: " + user.username + \
                   "\nPassword: " + user.password
-            setkeyboard(["YES", "NO"], message=msg, chat_id=chat_id, hide=False, is_exit=False)
+            setkeyboard(*args_to_func, message=msg, chat_id=chat_id, hide=False, is_exit=False)
             answer = ""
         # Ask if everything is ok
         elif user.status == "4":
@@ -139,7 +145,17 @@ def firstconfig():
     return answer
 
 
-def setkeyboard(*args, chat_id=chat_id, message="Prova", is_exit=True, hide=False):
+# def setkeyboard(chat_id=chat_id, message="Prova", is_exit=True, hide=False, *args):
+def setkeyboard(*args, **kwargs):
+
+    chat_id = kwargs.pop('chat_id')
+    message = kwargs.pop('message', "Prova")
+    is_exit = kwargs.pop('is_exit', True)
+    hide = kwargs.pop('hide', False)
+
+    # args = kwargs['keyboard']
+    bot_logger.debug(args)
+
     # *arg must be an array
     if not hide:
         keyboard = []
@@ -147,6 +163,7 @@ def setkeyboard(*args, chat_id=chat_id, message="Prova", is_exit=True, hide=Fals
             keyboard.append(arg)
         if is_exit:
             keyboard.append(["Exit"])
+        bot_logger.debug(keyboard)
         reply_markup = telegram.ReplyKeyboardMarkup(keyboard)
     else:
         reply_markup = telegram.ReplyKeyboardHide()
@@ -160,9 +177,9 @@ def config():
     # global chat_id_host_config
     if chat_id not in chat_id_config:
         chat_id_config.append(chat_id)
+        args_to_func = ["Host"], ["Port"], ["Username"], ["Password"], ["List data"]
         msg = "Which parameter you want to change?"
-        setkeyboard(["Host", "Port"], ["Username", "Password"], ["List data"], message=msg, chat_id=chat_id, hide=False,
-                    is_exit=True)
+        setkeyboard(*args_to_func, message=msg, chat_id=chat_id, hide=False, is_exit=True)
     else:
         # User has type something form the custom keyboard
         if text == "Host":

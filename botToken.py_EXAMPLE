@@ -1,0 +1,3 @@
+# Get token from BotFather and put here
+# After than - rename file to botToken.py
+TOKEN = 'some token'

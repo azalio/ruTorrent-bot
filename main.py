@@ -31,24 +31,25 @@ import logging
 from logging.handlers import RotatingFileHandler
 import threading
 import botDef
+import sys
 
 
 logger = logging.getLogger("main")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 # # Create a file handler where log is located
-handler = RotatingFileHandler('rutorrent.log', mode='a', maxBytes=5 * 1024 * 1024,
-                              backupCount=5, encoding=None, delay=0)
+# handler = RotatingFileHandler('rutorrent.log', mode='a', maxBytes=5 * 1024 * 1024,
+#                               backupCount=5, encoding=None, delay=0)
 # create file handler which logs even debug messages
-handler.setLevel(logging.INFO)
+# handler.setLevel(logging.INFO)
 # # create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
 # # Create a logging format
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(funcName)s(%(lineno)d) %(message)s')
-handler.setFormatter(formatter)
+# handler.setFormatter(formatter)
 ch.setFormatter(formatter)
 # add the handlers to the logger
-logger.addHandler(handler)
+# logger.addHandler(handler)
 logger.addHandler(ch)
 
 logger.debug('Log initialized')
@@ -85,7 +86,7 @@ def updateloop():
     while True:
         try:
             manageupdates()
-            sleep(2)
+            sleep(1)
         except Exception:
             # Error
             logger.exception("Exit from loop!")
@@ -98,9 +99,10 @@ def manageupdates():
     # If newer than the initial
     if botDef.LAST_UPDATE_ID < botDef.update_id:
         if botDef.text:
-            thread = threading.Thread(target=setanswer, args=(botDef.text,botDef.chat_id,))
-            logger.info("Start new thread from " + str(botDef.chat_id))
-            thread.start()
+            # thread = threading.Thread(target=setanswer, args=(botDef.text,botDef.chat_id,))
+            # logger.info("Start new thread from " + str(botDef.chat_id))
+            # thread.start()
+            setanswer(botDef.text, botDef.chat_id)
         botDef.LAST_UPDATE_ID = botDef.update_id
 
 
