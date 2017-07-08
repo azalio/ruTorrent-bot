@@ -16,7 +16,7 @@ def addmagnet(torrent, chat_id):
     try:
         user = ClassUsers.load(chat_id)
         # http://pazpi.ecc to replace with the setting from the user
-        url = user.host + ":" + user.port + '/ruTorrent/php/addtorrent.php?url=' + torrent
+        url = user.host + ":" + user.port + '/php/addtorrent.php?url=' + torrent
         if not (user.username == "NULL" or user.password == "NULL"):
             try:
                 respond = requests.post(url, auth=HTTPBasicAuth(user.username, user.password))
