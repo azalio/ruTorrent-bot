@@ -44,3 +44,7 @@ docker run --detach \
 ```
   * После этого вы можете настроить бота в телеграме
   следуя инструкции.
+  
+![telegram](https://raw.github.com/azalio/ruTorrent-bot/screnshoots/screenshots/image1.png)
+![telegram](https://raw.github.com/azalio/ruTorrent-bot/screnshoots/screenshots/image2.png)
+![ruTorrent](https://raw.github.com/azalio/ruTorrent-bot/screnshoots/screenshots/image3.png)
